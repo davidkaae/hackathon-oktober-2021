@@ -29,7 +29,8 @@ namespace WpfApplication1
         private int _ColorImageStride;
         private Skeleton[] FrameSkeletons;
         private Device lampBig;
-        
+        private static int defaultStartLength = 3;
+        private int timeToPlay = defaultStartLength;
 
         List<Button> buttons;
         static Button selected;
@@ -64,7 +65,10 @@ namespace WpfApplication1
             //buttons = new List<Button> { GAME1, GAME2, GAME3 };
             lampBig = new Device("172.16.1.147");
             lampBig.Connect();
+            Videoplayer.LoadedBehavior = MediaState.Manual;
+        //    Videoplayer.UnloadedBehavior = MediaState.Manual;
         }
+
         //raise event for Kinect sensor status changed
         private void DiscoverKinectSensor()
         {
@@ -169,6 +173,11 @@ namespace WpfApplication1
         private int count = 0;
         private void Kinect_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
+            if (Videoplayer.Position.Seconds > timeToPlay)
+            {
+                Videoplayer.Pause();
+            }
+
             using (SkeletonFrame frame = e.OpenSkeletonFrame())
             {
                 if (frame != null)
@@ -377,6 +386,19 @@ namespace WpfApplication1
         private void GAME3_Click(object sender, RoutedEventArgs e)
         {
             (Application.Current.MainWindow.FindName("_mainFrame") as Frame).Source = new Uri("Game3.xaml", UriKind.Relative); 
+        }
+
+        private void MoveCompleted()
+        {
+            timeToPlay += 3;
+        }
+
+        private void Start_Click(object sender, RoutedEventArgs e)
+        {
+            timeToPlay = defaultStartLength;
+            Videoplayer.Position = TimeSpan.MinValue;
+            Videoplayer.Play();
+
         }
     }
 }

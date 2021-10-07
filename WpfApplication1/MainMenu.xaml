@@ -36,6 +36,8 @@
             <Label x:Name="rkxy" Canvas.Left="900" FontSize="40" Canvas.Top="300" Height="100" Width="200"></Label>
             <Label x:Name="lkxy" Canvas.Left="900" FontSize="40" Canvas.Top="400" Height="100" Width="200"></Label>
             <Label x:Name="lbColor" Canvas.Left="400" FontSize="40" Canvas.Top="564" Height="100" Width="600"></Label>
+            <Label x:Name="Label1" Canvas.Left="100" Canvas.Top="100" Height="100" Width="1000"></Label>
+            <MediaElement x:Name="Videoplayer" Canvas.Left="100" Canvas.Top="200" Height="500" Width="500" Source="C:\Users\dkmakrkr\Downloads\360p.mp4" />
 
             <Controls:HoverButton Margin="0" Padding="0" x:Name="kinectButton" ImageSize="50"                                           
                                 ImageSource="/WpfApplication1;component/Images/myhand.png"  
@@ -46,6 +48,7 @@
                                   ImageSource="/WpfApplication1;component/Images/myhand.png"  
                                   ActiveImageSource="/WpfApplication1;component/Images/myhand.png" 
                                   TimeInterval="4000"  Panel.ZIndex="1000" Canvas.Left="0" Canvas.Top="0" />
+            <Button x:Name="Start" Content="Start" Height="488" Canvas.Left="874"  Canvas.Top="154" Width="349" Click="Start_Click" Background="#FFEDE610" FontSize="48"/>
 
         </Canvas>
     </Grid>
