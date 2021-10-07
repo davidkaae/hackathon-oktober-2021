@@ -14,19 +14,24 @@
         <Canvas Margin="0,0,3.6,0">
             <Canvas.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black" Offset="0"/>
+                    <GradientStop Color="White" Offset="0"/>
                     <GradientStop Color="#FF34E6F1" Offset="1"/>
                 </LinearGradientBrush>
             </Canvas.Background>
-            <Button x:Name="GAME1" Content="GAME1" Height="488" Canvas.Left="39" Canvas.Top="154" Width="402" Click="GAME1_Click" Background="#FFF52222" FontSize="48"/>
+            <!--<Button x:Name="GAME1" Content="GAME1" Height="488" Canvas.Left="39" Canvas.Top="154" Width="402" Click="GAME1_Click" Background="#FFF52222" FontSize="48"/>
             <Button x:Name="GAME2" Content="GAME2"  Height="488" Canvas.Left="474" Canvas.Top="154" Width="364" Click="GAME2_Click" Background="#FF17CB6A" FontSize="48"/>
-            <Button x:Name="GAME3" Content="GAME3" Height="488" Canvas.Left="874"  Canvas.Top="154" Width="349" Click="GAME3_Click" Background="#FFEDE610" FontSize="48"/>
-
+            <Button x:Name="GAME3" Content="GAME3" Height="488" Canvas.Left="874"  Canvas.Top="154" Width="349" Click="GAME3_Click" Background="#FFEDE610" FontSize="48"/>-->
+            <Label x:Name="Label1" Canvas.Left="100" Canvas.Top="100" Height="100" Width="1000"></Label>
 
             <Controls:HoverButton Margin="0" Padding="0" x:Name="kinectButton" ImageSize="50"                                           
                                 ImageSource="/WpfApplication1;component/Images/myhand.png"  
                                 ActiveImageSource="/WpfApplication1;component/Images/myhand.png" 
                                 TimeInterval="4000"  Panel.ZIndex="1000" Canvas.Left="0" Canvas.Top="0" />
+
+            <Controls:HoverButton Margin="0" Padding="0" x:Name="kinectButton2" ImageSize="50"                                           
+                                  ImageSource="/WpfApplication1;component/Images/myhand.png"  
+                                  ActiveImageSource="/WpfApplication1;component/Images/myhand.png" 
+                                  TimeInterval="4000"  Panel.ZIndex="1000" Canvas.Left="0" Canvas.Top="0" />
 
         </Canvas>
     </Grid>

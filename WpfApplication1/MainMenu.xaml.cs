@@ -13,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Coding4Fun.Kinect.Wpf.Controls;
+using YeelightAPI;
 
 namespace WpfApplication1
 {
@@ -26,6 +28,8 @@ namespace WpfApplication1
         private Int32Rect _ColorImageBitmapRect;
         private int _ColorImageStride;
         private Skeleton[] FrameSkeletons;
+        private Device lampBig;
+        
 
         List<Button> buttons;
         static Button selected;
@@ -41,7 +45,9 @@ namespace WpfApplication1
             InitializeComponent();
             InitializeButtons();
             Generics.ResetHandPosition(kinectButton);
+            Generics.ResetHandPosition(kinectButton2);
             kinectButton.Click += new RoutedEventHandler(kinectButton_Click);
+            
             this.Loaded += (s, e) => { DiscoverKinectSensor(); };
 
         }
@@ -51,7 +57,13 @@ namespace WpfApplication1
         //initialize buttons to be checked
         private void InitializeButtons()
         {
-            buttons = new List<Button> { GAME1, GAME2, GAME3 };
+            Label1.Content = "Looking for you...";
+            Label1.Visibility = Visibility.Visible;
+            Label1.FontSize = 50;
+            
+            //buttons = new List<Button> { GAME1, GAME2, GAME3 };
+            lampBig = new Device("172.16.1.147");
+            lampBig.Connect();
         }
         //raise event for Kinect sensor status changed
         private void DiscoverKinectSensor()
@@ -153,7 +165,8 @@ namespace WpfApplication1
                 }
             }
         }
-
+        
+        private int count = 0;
         private void Kinect_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
             using (SkeletonFrame frame = e.OpenSkeletonFrame())
@@ -169,8 +182,46 @@ namespace WpfApplication1
                     }
                     else
                     {
-                        Joint primaryHand = GetPrimaryHand(skeleton);
-                        TrackHand(primaryHand);
+                        //Joint primaryHand = GetPrimaryHand(skeleton);
+                        //TrackHand(primaryHand);
+                        var rightShoulder = skeleton.Joints[JointType.ShoulderRight];
+                        Joint rightHand = skeleton.Joints[JointType.HandRight];
+                        TrackHand(rightHand,kinectButton);
+
+                        var leftShoulder = skeleton.Joints[JointType.ShoulderLeft];
+                        Joint leftHand = skeleton.Joints[JointType.HandLeft];
+                        TrackHand(leftHand,kinectButton2);
+
+                        var head = skeleton.Joints[JointType.Head];
+                        var rightKnee = skeleton.Joints[JointType.KneeRight]; 
+
+
+                        var redColor = (int) ((rightHand.Position.X - rightShoulder.Position.X) * 100);
+                        var greenColor = (int) ((leftShoulder.Position.X - leftHand.Position.X) * 100);
+                        var blueColor = (int) ((rightKnee.Position.X - head.Position.X) * 100);
+
+                        
+                        var brightness = (int) ((rightHand.Position.X - leftHand.Position.X) * 100);
+                        Label1.Content = "Brightness: " + brightness;
+
+                        
+                        if (count % 25 == 0)
+                        {
+                            bool updateSuccess = false;
+
+                            if(brightness >= 0 && brightness <= 100)
+                                lampBig.SetBrightness(brightness);
+                            if (redColor >= 0 && redColor <= 100 && greenColor >= 0 && greenColor <= 100 && blueColor >= 0 && blueColor <= 100)
+                            {
+                                lampBig.SetRGBColor(redColor * 2, greenColor * 2, blueColor);
+                            }
+
+                            if (count % 500 == 0)
+                                lampBig.Connect();
+
+                        }
+
+                        count++;
 
                     }
                 }
@@ -178,7 +229,7 @@ namespace WpfApplication1
         }
 
         //track and display hand
-        private void TrackHand(Joint hand)
+        private void TrackHand(Joint hand,HoverButton kinectButton)
         {
             if (hand.TrackingState == JointTrackingState.NotTracked)
             {
@@ -196,8 +247,9 @@ namespace WpfApplication1
                 Canvas.SetLeft(kinectButton, handX);
                 Canvas.SetTop(kinectButton, handY);
 
-                if (isHandOver(kinectButton, buttons)) kinectButton.Hovering();
-                else kinectButton.Release();
+               // if (isHandOver(kinectButton, buttons)) kinectButton.Hovering();
+               // else kinectButton.Release();
+                
                 if (hand.JointType == JointType.HandRight)
                 {
                     kinectButton.ImageSource = "/WpfApplication1;component/Images/myhand.png";
@@ -212,30 +264,30 @@ namespace WpfApplication1
         }
 
         //detect if hand is overlapping over any button
-        private bool isHandOver(FrameworkElement hand, List<Button> buttonslist)
-        {
-            var handTopLeft = new Point(Canvas.GetLeft(hand), Canvas.GetTop(hand));
-            var handX = handTopLeft.X + hand.ActualWidth / 2;
-            var handY = handTopLeft.Y + hand.ActualHeight / 2;
+        //private bool isHandOver(FrameworkElement hand, List<Button> buttonslist)
+        //{
+        //    var handTopLeft = new Point(Canvas.GetLeft(hand), Canvas.GetTop(hand));
+        //    var handX = handTopLeft.X + hand.ActualWidth / 2;
+        //    var handY = handTopLeft.Y + hand.ActualHeight / 2;
 
-            foreach (Button target in buttonslist)
-            {
+        //    foreach (Button target in buttonslist)
+        //    {
 
-                if (target != null)
-                {
-                    Point targetTopLeft = new Point(Canvas.GetLeft(target), Canvas.GetTop(target));
-                    if (handX > targetTopLeft.X &&
-                        handX < targetTopLeft.X + target.Width &&
-                        handY > targetTopLeft.Y &&
-                        handY < targetTopLeft.Y + target.Height)
-                    {
-                        selected = target;
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
+        //        if (target != null)
+        //        {
+        //            Point targetTopLeft = new Point(Canvas.GetLeft(target), Canvas.GetTop(target));
+        //            if (handX > targetTopLeft.X &&
+        //                handX < targetTopLeft.X + target.Width &&
+        //                handY > targetTopLeft.Y &&
+        //                handY < targetTopLeft.Y + target.Height)
+        //            {
+        //                selected = target;
+        //                return true;
+        //            }
+        //        }
+        //    }
+        //    return false;
+        //}
 
         //get the hand closest to the Kinect sensor
         private static Joint GetPrimaryHand(Skeleton skeleton)

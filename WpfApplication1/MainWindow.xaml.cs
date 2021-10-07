@@ -23,7 +23,7 @@ namespace WpfApplication1
         public MainWindow()
         {
             InitializeComponent();
-            this.WindowState = System.Windows.WindowState.Maximized;
+            this.WindowState = System.Windows.WindowState.Normal;
             this.WindowStyle = System.Windows.WindowStyle.None;
 
             if (Generics.LoadingStatus == 0)
