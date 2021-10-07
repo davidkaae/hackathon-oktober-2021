@@ -190,20 +190,26 @@ namespace WpfApplication1
                         Joint leftHand = skeleton.Joints[JointType.HandLeft];
                         TrackHand(leftHand,kinectButton2);
 
-                        var head = skeleton.Joints[JointType.ShoulderCenter];
+                        var center = skeleton.Joints[JointType.ShoulderCenter];
                         var rightFoot = skeleton.Joints[JointType.FootRight];
                         var leftFoot = skeleton.Joints[JointType.FootLeft];
 
 
-                        var redColor =  (int)(((int)Math.Abs(rightHand.Position.X - head.Position.X) * 100) + ((int)(Math.Abs(rightHand.Position.Y - head.Position.Y) * 100)) * 2.5);
-                        var greenColor = (int)(((int)Math.Abs(leftHand.Position.X - head.Position.X) * 100) + ((int)(Math.Abs(leftHand.Position.Y - head.Position.Y) * 100)) * 2.5);
-                        var blueColor = (int)(((int)Math.Abs(leftFoot.Position.X - rightFoot.Position.X) * 100) + ((int)(Math.Abs(leftFoot.Position.Y - rightFoot.Position.Y) * 100)) * 2.5);
+                        var redColor =  (CalculateDiffOnAxis(rightHand.Position.X, center.Position.X) + CalculateDiffOnAxis(rightHand.Position.Y, center.Position.Y)) * 2.5;
+                        var greenColor = (CalculateDiffOnAxis(leftHand.Position.X, center.Position.X) + CalculateDiffOnAxis(leftHand.Position.Y, center.Position.Y)) * 2.5;
+                        var blueColor = (CalculateDiffOnAxis(leftFoot.Position.X, rightFoot.Position.X) + CalculateDiffOnAxis(leftFoot.Position.Y, rightFoot.Position.Y)) * 2;
+                        if (redColor > 150) redColor = 255;
+                        if (greenColor > 150) greenColor = 255; 
+                        if (blueColor > 150) blueColor = 255;
 
+                        if (redColor < 40) redColor = 0;
+                        if (greenColor < 40) greenColor = 0;
+                        if (blueColor < 40) blueColor = 0;
 
                         var brightness = (int) ((rightHand.Position.X - leftHand.Position.X) * 100);
                         
-                        rh.Content = "x: " + Math.Abs((int)((rightHand.Position.X - head.Position.X) * 100)) + " y: " + Math.Abs((int)((rightHand.Position.Y - head.Position.Y) * 100));
-                        lh.Content = "x: " + Math.Abs((int)((leftHand.Position.X - head.Position.X) * 100)) + " y: " + Math.Abs((int)((leftHand.Position.Y - head.Position.Y) * 100));
+                        rh.Content = "x: " + Math.Abs((int)((rightHand.Position.X - center.Position.X) * 100)) + " y: " + Math.Abs((int)((rightHand.Position.Y - center.Position.Y) * 100));
+                        lh.Content = "x: " + Math.Abs((int)((leftHand.Position.X - center.Position.X) * 100)) + " y: " + Math.Abs((int)((leftHand.Position.Y - center.Position.Y) * 100));
                         
                         rhxy.Content = $"Red: { redColor}";
                         lhxy.Content = $"Green: { greenColor}";
@@ -218,7 +224,7 @@ namespace WpfApplication1
                             //    lampBig.SetBrightness(brightness);
                             if (redColor >= 0 && redColor <= 255 && greenColor >= 0 && greenColor <= 255 && blueColor >= 0 && blueColor <= 255)
                             {
-                                lampBig.SetRGBColor(redColor, greenColor, blueColor);
+                                lampBig.SetRGBColor((int)redColor, (int)greenColor, blueColor);
                             }
 
                             if (count % 150 == 0)
@@ -231,6 +237,11 @@ namespace WpfApplication1
                     }
                 }
             }
+        }
+
+        private int CalculateDiffOnAxis (float x, float y)
+        {
+            return (int)(Math.Abs(x - y) * 100);
         }
 
         //track and display hand
