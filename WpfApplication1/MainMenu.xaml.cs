@@ -280,10 +280,10 @@ namespace WpfApplication1
 
                         var redColor =  (CalculateDiffOnAxis(rightHand.Position.X, center.Position.X) + CalculateDiffOnAxis(rightHand.Position.Y, center.Position.Y)) * 2.5;
                         var greenColor = (CalculateDiffOnAxis(leftHand.Position.X, center.Position.X) + CalculateDiffOnAxis(leftHand.Position.Y, center.Position.Y)) * 2.5;
-                        var blueColor = (CalculateDiffOnAxis(leftFoot.Position.X, rightFoot.Position.X) + CalculateDiffOnAxis(leftFoot.Position.Y, rightFoot.Position.Y)) * 2;
+                        var blueColor = (CalculateDiffOnAxis(leftFoot.Position.X, rightFoot.Position.X) + CalculateDiffOnAxis(leftFoot.Position.Y, rightFoot.Position.Y)) * 2.5;
                         if (redColor > 150) redColor = 255;
                         if (greenColor > 150) greenColor = 255; 
-                        if (blueColor > 150) blueColor = 255;
+                        if (blueColor > 125) blueColor = 255;
 
                         if (redColor < 100) redColor = 0;
                         if (greenColor < 100) greenColor = 0;
@@ -307,7 +307,7 @@ namespace WpfApplication1
                             //    lampBig.SetBrightness(brightness);
                             if (redColor >= 0 && redColor <= 255 && greenColor >= 0 && greenColor <= 255 && blueColor >= 0 && blueColor <= 255)
                             {
-                                lampBig.SetRGBColor((int)redColor, (int)greenColor, blueColor);
+                                lampBig.SetRGBColor((int)redColor, (int)greenColor, (int)blueColor);
                             }
 
                             if (count % 150 == 0)
@@ -318,7 +318,7 @@ namespace WpfApplication1
                             }
 
                             var currentTargetColor = ColorStates[stateIndex];
-                            if (currentTargetColor.IsMatched((int) redColor, (int) greenColor, blueColor))
+                            if (currentTargetColor.IsMatched((int) redColor, (int) greenColor, (int)blueColor))
                             {
                                 stateIndex++;
                                 
