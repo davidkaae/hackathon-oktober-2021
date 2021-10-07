@@ -66,7 +66,7 @@ namespace WpfApplication1
             lampBig = new Device("172.16.1.147");
             lampBig.Connect();
             Videoplayer.LoadedBehavior = MediaState.Manual;
-            Videoplayer.UnloadedBehavior = MediaState.Manual;
+        //    Videoplayer.UnloadedBehavior = MediaState.Manual;
         }
 
         //raise event for Kinect sensor status changed
