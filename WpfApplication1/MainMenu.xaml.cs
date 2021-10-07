@@ -18,6 +18,46 @@ using YeelightAPI;
 
 namespace WpfApplication1
 {
+    public class State
+    {
+        public int Red { get; }
+        public int Green { get; }
+        public int Blue { get; }
+        private readonly string _colorName;
+
+        public State(int red, int green, int blue, string colorName)
+        {
+            Red = red;
+            Green = green;
+            Blue = blue;
+            _colorName = colorName;
+        }
+
+        public bool IsMatched(int red, int green, int blue)
+        {
+            var isRed = red == 255;
+            var isGreen = green == 255;
+            var isBlue = blue == 255;
+
+            switch (_colorName)
+            {
+                case "red":
+                    return isRed && !isGreen && !isBlue;
+                case "green":
+                    return isRed && !isGreen && !isBlue;
+                case "blue":
+                    return isRed && !isGreen && !isBlue;
+                case "yellow":
+                    return isRed && isGreen && !isBlue;
+                case "purple":
+                    return isRed && !isGreen && isBlue;
+                default:
+                    return false;
+
+            }
+        }
+    }
+
     /// <summary>
     /// Interaction logic for Page.xaml
     /// </summary>
@@ -29,6 +69,7 @@ namespace WpfApplication1
         private int _ColorImageStride;
         private Skeleton[] FrameSkeletons;
         private Device lampBig;
+        private Device lampSmall;
         private static int defaultStartLength = 3;
         private int timeToPlay = defaultStartLength;
 
@@ -38,10 +79,23 @@ namespace WpfApplication1
         float handX;
         float handY;
 
-
+        public List<State> ColorStates { get; set; }
+        public int stateIndex = 0;
 
         public MainMenu()
         {
+
+            ColorStates = new List<State>
+            {
+                new State(250, 0, 0, "red"),
+                new State(0, 255, 0, "green"),
+                new State(0, 0, 255, "blue"),
+                
+                new State(255, 255, 0, "yellow"),
+                
+                new State(255, 0, 255, "purple")
+            };
+         
           
             InitializeComponent();
             InitializeButtons();
@@ -61,7 +115,15 @@ namespace WpfApplication1
             //Label1.Content = "Looking for you...";
             //Label1.Visibility = Visibility.Visible;
             //Label1.FontSize = 50;
-            
+
+            lampSmall = new Device("172.16.1.144");
+            lampSmall.Connect();
+            var currentTargetColor = ColorStates[stateIndex];
+            lampSmall.SetRGBColor(currentTargetColor.Red,currentTargetColor.Green, currentTargetColor.Blue);
+            lbColorTarget.Background = new SolidColorBrush(Color.FromRgb((byte)currentTargetColor.Red, (byte)currentTargetColor.Green, (byte)currentTargetColor.Blue));
+
+
+
             //buttons = new List<Button> { GAME1, GAME2, GAME3 };
             lampBig = new Device("172.16.1.147");
             lampBig.Connect();
@@ -181,14 +243,14 @@ namespace WpfApplication1
         private void Kinect_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
             pg2.Value = timeToPlay - Videoplayer.Position.Seconds;
-            //if (Videoplayer.Position.Seconds > timeToPlay)
-            //{
-            //    Videoplayer.Pause();
-            //}
+            if (Videoplayer.Position.Seconds > timeToPlay)
+            {
+                Videoplayer.Pause();
+            }
 
-         
 
-            
+
+
 
             using (SkeletonFrame frame = e.OpenSkeletonFrame())
             {
@@ -223,18 +285,18 @@ namespace WpfApplication1
                         if (greenColor > 150) greenColor = 255; 
                         if (blueColor > 150) blueColor = 255;
 
-                        if (redColor < 40) redColor = 0;
-                        if (greenColor < 40) greenColor = 0;
-                        if (blueColor < 40) blueColor = 0;
+                        if (redColor < 100) redColor = 0;
+                        if (greenColor < 100) greenColor = 0;
+                        if (blueColor < 100) blueColor = 0;
 
                         var brightness = (int) ((rightHand.Position.X - leftHand.Position.X) * 100);
                         
                         rh.Content = "x: " + Math.Abs((int)((rightHand.Position.X - center.Position.X) * 100)) + " y: " + Math.Abs((int)((rightHand.Position.Y - center.Position.Y) * 100));
                         lh.Content = "x: " + Math.Abs((int)((leftHand.Position.X - center.Position.X) * 100)) + " y: " + Math.Abs((int)((leftHand.Position.Y - center.Position.Y) * 100));
                         
-                        rhxy.Content = $"Red: { redColor}";
-                        lhxy.Content = $"Green: { greenColor}";
-                        rkxy.Content = $"Blue: { blueColor}";
+                        rhxy.Content = $"MatchOnRed: { redColor}";
+                        lhxy.Content = $"MatchOnGreen: { greenColor}";
+                        rkxy.Content = $"MatchOnBlue: { blueColor}";
                         lbColor.Background = new SolidColorBrush(Color.FromRgb((byte)redColor, (byte)greenColor, (byte)blueColor));
 
                         if (count % 15 == 0)
@@ -249,7 +311,28 @@ namespace WpfApplication1
                             }
 
                             if (count % 150 == 0)
+                            {
+                                
                                 lampBig.Connect();
+                                //lampSmall.Connect();
+                            }
+
+                            var currentTargetColor = ColorStates[stateIndex];
+                            if (currentTargetColor.IsMatched((int) redColor, (int) greenColor, blueColor))
+                            {
+                                stateIndex++;
+                                
+                                if (stateIndex >= ColorStates.Count)
+                                    stateIndex = 0;
+                                
+                                currentTargetColor = ColorStates[stateIndex];
+                                
+                                lampSmall.Connect();
+                                lampSmall.SetRGBColor(currentTargetColor.Red,currentTargetColor.Green, currentTargetColor.Blue);
+                                lbColorTarget.Background = new SolidColorBrush(Color.FromRgb((byte)currentTargetColor.Red, (byte)currentTargetColor.Green, (byte)currentTargetColor.Blue));
+
+                                MoveCompleted();
+                            }
 
                         }
 
@@ -403,6 +486,7 @@ namespace WpfApplication1
         private void MoveCompleted()
         {
             timeToPlay += 3;
+            Videoplayer.Play();
         }
 
         private void Start_Click(object sender, RoutedEventArgs e)
