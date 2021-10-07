@@ -58,9 +58,9 @@ namespace WpfApplication1
         //initialize buttons to be checked
         private void InitializeButtons()
         {
-            Label1.Content = "Looking for you...";
-            Label1.Visibility = Visibility.Visible;
-            Label1.FontSize = 50;
+            //Label1.Content = "Looking for you...";
+            //Label1.Visibility = Visibility.Visible;
+            //Label1.FontSize = 50;
             
             //buttons = new List<Button> { GAME1, GAME2, GAME3 };
             lampBig = new Device("172.16.1.147");
@@ -204,40 +204,51 @@ namespace WpfApplication1
                     else
                     {
                         //Joint primaryHand = GetPrimaryHand(skeleton);
-                        //TrackHand(primaryHand);
-                        var rightShoulder = skeleton.Joints[JointType.ShoulderRight];
+                        //TrackHand(primaryHand);;
                         Joint rightHand = skeleton.Joints[JointType.HandRight];
                         TrackHand(rightHand,kinectButton);
 
-                        var leftShoulder = skeleton.Joints[JointType.ShoulderLeft];
                         Joint leftHand = skeleton.Joints[JointType.HandLeft];
                         TrackHand(leftHand,kinectButton2);
 
-                        var head = skeleton.Joints[JointType.Head];
-                        var rightKnee = skeleton.Joints[JointType.KneeRight]; 
+                        var center = skeleton.Joints[JointType.ShoulderCenter];
+                        var rightFoot = skeleton.Joints[JointType.FootRight];
+                        var leftFoot = skeleton.Joints[JointType.FootLeft];
 
 
-                        var redColor = (int) ((rightHand.Position.X - rightShoulder.Position.X) * 100);
-                        var greenColor = (int) ((leftShoulder.Position.X - leftHand.Position.X) * 100);
-                        var blueColor = (int) ((rightKnee.Position.X - head.Position.X) * 100);
+                        var redColor =  (CalculateDiffOnAxis(rightHand.Position.X, center.Position.X) + CalculateDiffOnAxis(rightHand.Position.Y, center.Position.Y)) * 2.5;
+                        var greenColor = (CalculateDiffOnAxis(leftHand.Position.X, center.Position.X) + CalculateDiffOnAxis(leftHand.Position.Y, center.Position.Y)) * 2.5;
+                        var blueColor = (CalculateDiffOnAxis(leftFoot.Position.X, rightFoot.Position.X) + CalculateDiffOnAxis(leftFoot.Position.Y, rightFoot.Position.Y)) * 2;
+                        if (redColor > 150) redColor = 255;
+                        if (greenColor > 150) greenColor = 255; 
+                        if (blueColor > 150) blueColor = 255;
 
-                        
+                        if (redColor < 40) redColor = 0;
+                        if (greenColor < 40) greenColor = 0;
+                        if (blueColor < 40) blueColor = 0;
+
                         var brightness = (int) ((rightHand.Position.X - leftHand.Position.X) * 100);
-                        Label1.Content = "Brightness: " + brightness;
-
                         
-                        if (count % 25 == 0)
+                        rh.Content = "x: " + Math.Abs((int)((rightHand.Position.X - center.Position.X) * 100)) + " y: " + Math.Abs((int)((rightHand.Position.Y - center.Position.Y) * 100));
+                        lh.Content = "x: " + Math.Abs((int)((leftHand.Position.X - center.Position.X) * 100)) + " y: " + Math.Abs((int)((leftHand.Position.Y - center.Position.Y) * 100));
+                        
+                        rhxy.Content = $"Red: { redColor}";
+                        lhxy.Content = $"Green: { greenColor}";
+                        rkxy.Content = $"Blue: { blueColor}";
+                        lbColor.Background = new SolidColorBrush(Color.FromRgb((byte)redColor, (byte)greenColor, (byte)blueColor));
+
+                        if (count % 15 == 0)
                         {
                             bool updateSuccess = false;
 
-                            if(brightness >= 0 && brightness <= 100)
-                                lampBig.SetBrightness(brightness);
-                            if (redColor >= 0 && redColor <= 100 && greenColor >= 0 && greenColor <= 100 && blueColor >= 0 && blueColor <= 100)
+                            //if(brightness >= 0 && brightness <= 100)
+                            //    lampBig.SetBrightness(brightness);
+                            if (redColor >= 0 && redColor <= 255 && greenColor >= 0 && greenColor <= 255 && blueColor >= 0 && blueColor <= 255)
                             {
-                                lampBig.SetRGBColor(redColor * 2, greenColor * 2, blueColor);
+                                lampBig.SetRGBColor((int)redColor, (int)greenColor, blueColor);
                             }
 
-                            if (count % 500 == 0)
+                            if (count % 150 == 0)
                                 lampBig.Connect();
 
                         }
@@ -247,6 +258,11 @@ namespace WpfApplication1
                     }
                 }
             }
+        }
+
+        private int CalculateDiffOnAxis (float x, float y)
+        {
+            return (int)(Math.Abs(x - y) * 100);
         }
 
         //track and display hand

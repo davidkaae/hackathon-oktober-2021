@@ -21,6 +21,21 @@
             <!--<Button x:Name="GAME1" Content="GAME1" Height="488" Canvas.Left="39" Canvas.Top="154" Width="402" Click="GAME1_Click" Background="#FFF52222" FontSize="48"/>
             <Button x:Name="GAME2" Content="GAME2"  Height="488" Canvas.Left="474" Canvas.Top="154" Width="364" Click="GAME2_Click" Background="#FF17CB6A" FontSize="48"/>
             <Button x:Name="GAME3" Content="GAME3" Height="488" Canvas.Left="874"  Canvas.Top="154" Width="349" Click="GAME3_Click" Background="#FFEDE610" FontSize="48"/>-->
+            <Label x:Name="rh_title" Canvas.Left="100" FontSize="40" Canvas.Top="100" Height="100" Width="300">Right hand:</Label>
+            <Label x:Name="lh_title" Canvas.Left="100" FontSize="40" Canvas.Top="200" Height="100" Width="300">Left hand:</Label>
+            <Label x:Name="rk_title" Canvas.Left="100" FontSize="40" Canvas.Top="300" Height="100" Width="300">Right knee:</Label>
+            <Label x:Name="lk_title" Canvas.Left="100" FontSize="40" Canvas.Top="400" Height="100" Width="300">Left knee:</Label>
+            <Label x:Name="color_title" Canvas.Left="100" FontSize="40" Canvas.Top="500" Height="100" Width="300">Left knee:</Label>
+            <Label x:Name="rh" Canvas.Left="400" FontSize="40" Canvas.Top="100" Height="100" Width="500"></Label>
+            <Label x:Name="lh" Canvas.Left="400" FontSize="40" Canvas.Top="200" Height="100" Width="500"></Label>
+            <Label x:Name="rk" Canvas.Left="400" FontSize="40" Canvas.Top="300" Height="100" Width="500"></Label>
+            <Label x:Name="lk" Canvas.Left="400" FontSize="40" Canvas.Top="400" Height="100" Width="500"></Label>
+
+            <Label x:Name="rhxy" Canvas.Left="900" FontSize="40" Canvas.Top="100" Height="100" Width="200"></Label>
+            <Label x:Name="lhxy" Canvas.Left="900" FontSize="40" Canvas.Top="200" Height="100" Width="200"></Label>
+            <Label x:Name="rkxy" Canvas.Left="900" FontSize="40" Canvas.Top="300" Height="100" Width="200"></Label>
+            <Label x:Name="lkxy" Canvas.Left="900" FontSize="40" Canvas.Top="400" Height="100" Width="200"></Label>
+            <Label x:Name="lbColor" Canvas.Left="400" FontSize="40" Canvas.Top="564" Height="100" Width="600"></Label>
             <Label x:Name="Label1" Canvas.Left="100" Canvas.Top="100" Height="100" Width="1000"></Label>
             <MediaElement x:Name="Videoplayer" Canvas.Left="100" Canvas.Top="200" Height="500" Width="500" Source="C:\Users\dkmakrkr\Downloads\360p.mp4" />
 
