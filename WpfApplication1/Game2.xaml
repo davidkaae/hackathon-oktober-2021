@@ -1,0 +1,29 @@
+﻿<Page x:Class="WpfApplication1.Game2"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      
+      
+              xmlns:Controls="clr-namespace:Coding4Fun.Kinect.Wpf.Controls;assembly=Coding4Fun.Kinect.Wpf" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" 
+ d:DesignHeight="673.2" d:DesignWidth="1304.4"     
+	Title="Page">
+    <Grid Canvas.Top="-16" x:Name="LayoutRoot">
+
+        <Canvas Margin="0,0,3.6,0">
+            <Canvas.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="0"/>
+                    <GradientStop Color="#FFB60C0C" Offset="1"/>
+                </LinearGradientBrush>
+            </Canvas.Background>
+            <Button x:Name="BACKHOME" Content="    GAME 2&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;BACK HOME" Height="488" Canvas.Left="474" Canvas.Top="98" Width="402" Click="BACKHOME_Click" Background="#FF239E60" FontSize="48"  />
+
+            <Controls:HoverButton Margin="0" Padding="0" x:Name="kinectButton" ImageSize="50"                                           
+                                ImageSource="/WpfApplication1;component/Images/myhand.png"  
+                                ActiveImageSource="/WpfApplication1;component/Images/myhand.png" 
+                                TimeInterval="4000"  Panel.ZIndex="1000" Canvas.Left="0" Canvas.Top="0" />
+        </Canvas>
+    </Grid>
+</Page>
