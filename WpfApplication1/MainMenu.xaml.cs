@@ -66,7 +66,14 @@ namespace WpfApplication1
             lampBig = new Device("172.16.1.147");
             lampBig.Connect();
             Videoplayer.LoadedBehavior = MediaState.Manual;
+            Videoplayer.Play();
+            Videoplayer.MediaEnded += Videoplayer_MediaEnded;
         //    Videoplayer.UnloadedBehavior = MediaState.Manual;
+        }
+
+        private void Videoplayer_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            showWinningMessage();
         }
 
         //raise event for Kinect sensor status changed
@@ -173,10 +180,15 @@ namespace WpfApplication1
         private int count = 0;
         private void Kinect_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
-            if (Videoplayer.Position.Seconds > timeToPlay)
-            {
-                Videoplayer.Pause();
-            }
+            pg2.Value = timeToPlay - Videoplayer.Position.Seconds;
+            //if (Videoplayer.Position.Seconds > timeToPlay)
+            //{
+            //    Videoplayer.Pause();
+            //}
+
+         
+
+            
 
             using (SkeletonFrame frame = e.OpenSkeletonFrame())
             {
@@ -382,6 +394,11 @@ namespace WpfApplication1
             timeToPlay = defaultStartLength;
             Videoplayer.Position = TimeSpan.MinValue;
             Videoplayer.Play();
+
+        }
+
+        private void showWinningMessage()
+        {
 
         }
     }
