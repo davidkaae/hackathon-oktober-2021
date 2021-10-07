@@ -22,6 +22,7 @@
             <Button x:Name="GAME2" Content="GAME2"  Height="488" Canvas.Left="474" Canvas.Top="154" Width="364" Click="GAME2_Click" Background="#FF17CB6A" FontSize="48"/>
             <Button x:Name="GAME3" Content="GAME3" Height="488" Canvas.Left="874"  Canvas.Top="154" Width="349" Click="GAME3_Click" Background="#FFEDE610" FontSize="48"/>-->
             <Label x:Name="Label1" Canvas.Left="100" Canvas.Top="100" Height="100" Width="1000"></Label>
+            <MediaElement x:Name="Videoplayer" Canvas.Left="100" Canvas.Top="200" Height="500" Width="500" Source="C:\Users\dkmakrkr\Downloads\360p.mp4" />
 
             <Controls:HoverButton Margin="0" Padding="0" x:Name="kinectButton" ImageSize="50"                                           
                                 ImageSource="/WpfApplication1;component/Images/myhand.png"  
@@ -32,6 +33,7 @@
                                   ImageSource="/WpfApplication1;component/Images/myhand.png"  
                                   ActiveImageSource="/WpfApplication1;component/Images/myhand.png" 
                                   TimeInterval="4000"  Panel.ZIndex="1000" Canvas.Left="0" Canvas.Top="0" />
+            <Button x:Name="Start" Content="Start" Height="488" Canvas.Left="874"  Canvas.Top="154" Width="349" Click="Start_Click" Background="#FFEDE610" FontSize="48"/>
 
         </Canvas>
     </Grid>
