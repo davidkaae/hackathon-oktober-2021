@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -44,9 +45,9 @@ namespace WpfApplication1
                 case "red":
                     return isRed && !isGreen && !isBlue;
                 case "green":
-                    return isRed && !isGreen && !isBlue;
+                    return !isRed && isGreen && !isBlue;
                 case "blue":
-                    return isRed && !isGreen && !isBlue;
+                    return !isRed && !isGreen && isBlue;
                 case "yellow":
                     return isRed && isGreen && !isBlue;
                 case "purple":
@@ -128,7 +129,7 @@ namespace WpfApplication1
             lampBig = new Device("172.16.1.147");
             lampBig.Connect();
             Videoplayer.LoadedBehavior = MediaState.Manual;
-            Videoplayer.Play();
+          //  Videoplayer.Play();
             Videoplayer.MediaEnded += Videoplayer_MediaEnded;
         //    Videoplayer.UnloadedBehavior = MediaState.Manual;
         }
@@ -327,8 +328,10 @@ namespace WpfApplication1
                                 
                                 currentTargetColor = ColorStates[stateIndex];
                                 
-                                lampSmall.Connect();
-                                lampSmall.SetRGBColor(currentTargetColor.Red,currentTargetColor.Green, currentTargetColor.Blue);
+                                Task.Run(()=>lampSmall.Connect());
+                                Thread.Sleep(55);
+
+                                Task.Run(()=> lampSmall.SetRGBColor(currentTargetColor.Red,currentTargetColor.Green, currentTargetColor.Blue));
                                 lbColorTarget.Background = new SolidColorBrush(Color.FromRgb((byte)currentTargetColor.Red, (byte)currentTargetColor.Green, (byte)currentTargetColor.Blue));
 
                                 MoveCompleted();
@@ -485,7 +488,7 @@ namespace WpfApplication1
 
         private void MoveCompleted()
         {
-            timeToPlay += 3;
+            timeToPlay += defaultStartLength;
             Videoplayer.Play();
         }
 
